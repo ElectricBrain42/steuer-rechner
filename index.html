@@ -1,5 +1,12 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
 <title>Steuer-Szenario — Renovierung & Vermietung</title>
 <style>
+
 :root {
   --bg: #f3f2ef; --surface: #ffffff; --surface-2: #f9f8f5;
   --text: #1a1a19; --text-2: #52514e; --text-3: #898781;
@@ -127,30 +134,203 @@ header p{color:var(--text-2);font-size:0.9rem;margin-top:2px}
 .note-box{margin-top:14px;padding:12px 14px;background:var(--surface-2);border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-2);line-height:1.6;border-left:3px solid var(--blue)}
 
 @media(max-width:700px){
-  .params-row{grid-template-columns:1fr}
-  .metric-grid{grid-template-columns:1fr}
-  .compare-grid{grid-template-columns:1fr 1fr 1fr;font-size:0.78rem}
-  .compare-grid .cg-val,.compare-grid .cg-label,.compare-grid .cg-header{padding:6px 6px}
-  .bar-label{width:48px;font-size:0.72rem}
-}
-</style>
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{overflow-x:hidden}
+  .app{width:100%;max-width:none;padding:12px 10px 40px}
+  header{margin-bottom:18px}
+  header h1{font-size:1.28rem;line-height:1.25}
+  header p{font-size:0.82rem;padding:0 6px}
 
+  .save-bar{display:grid;grid-template-columns:1fr;gap:8px;margin:-2px 0 16px}
+  .save-btn{width:100%;justify-content:center;min-height:44px;font-size:0.9rem}
+
+  .card{margin-bottom:14px;border-radius:8px}
+  .card-header{padding:12px 14px 9px;font-size:0.92rem;gap:8px;flex-wrap:wrap}
+  .card-body{padding:12px 14px}
+
+  .params-row{grid-template-columns:1fr;gap:10px}
+  .input-group label{font-size:0.7rem}
+  .input-wrap input{font-size:16px;min-height:42px}
+
+  .reno-list{margin-bottom:10px}
+  .reno-row{
+    display:grid;
+    grid-template-columns:22px minmax(0,1fr) 82px 16px;
+    align-items:center;
+    gap:5px 7px;
+    padding:9px 0;
+  }
+  .reno-row input[type="checkbox"]{width:18px;height:18px}
+  .reno-row input.reno-name{
+    min-width:0;
+    width:100%;
+    font-size:14px;
+    line-height:1.3;
+    padding:5px 0;
+  }
+  .reno-row input.reno-amount{
+    width:82px;
+    max-width:100%;
+    font-size:16px;
+    padding:6px 6px;
+  }
+  .reno-row .unit{font-size:0.75rem;padding:0}
+  .reno-actions{
+    grid-column:2 / 5;
+    justify-self:end;
+    gap:4px;
+    margin-top:1px;
+  }
+  .reno-btn{width:32px;height:32px;font-size:0.95rem}
+  .btn-add{min-height:40px;font-size:0.88rem}
+
+  .metric-grid{grid-template-columns:1fr;gap:8px}
+  .metric{padding:10px 12px}
+  .metric-value{font-size:1rem}
+
+  .threshold-bar{height:32px}
+  .threshold-zone{font-size:0.64rem}
+  .threshold-marker-label{font-size:0.68rem}
+
+  .chart-area{overflow-x:auto;padding-bottom:4px}
+  .bar-row{min-width:430px}
+  .bar-label{width:48px;font-size:0.72rem}
+
+  .results-table{min-width:700px}
+  .results-table th{font-size:0.66rem;padding:7px 8px}
+  .results-table td{font-size:0.8rem;padding:8px}
+
+  .compare-grid{
+    min-width:430px;
+    grid-template-columns:1.25fr 1fr 1fr;
+    font-size:0.76rem
+  }
+  .compare-grid .cg-val,.compare-grid .cg-label,.compare-grid .cg-header{padding:6px 5px}
+  #compareGrid{overflow:visible}
+
+  .note-box{font-size:0.8rem;padding:10px 11px;line-height:1.5}
+  .summary-row{font-size:0.84rem;gap:10px}
+  .summary-row.total{font-size:0.92rem}
+}
+
+@media(max-width:420px){
+  .app{padding-left:7px;padding-right:7px}
+  .card-header,.card-body{padding-left:11px;padding-right:11px}
+  .reno-row{grid-template-columns:20px minmax(0,1fr) 76px 14px;gap:5px}
+  .reno-row input.reno-name{font-size:13.5px}
+  .reno-row input.reno-amount{width:76px}
+  .legend{gap:8px;font-size:0.72rem}
+}
+
+
+/* iPhone / Safari robustness */
+html,body{
+  width:100%;
+  min-width:0;
+  margin:0;
+  padding:0;
+}
+body{
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+button,input{
+  -webkit-appearance:none;
+  appearance:none;
+}
+input[type="checkbox"]{
+  -webkit-appearance:checkbox;
+  appearance:auto;
+}
+.app{
+  width:min(100%,960px);
+  box-sizing:border-box;
+}
+.mobile-open-note{
+  display:none;
+}
+@media(max-width:700px){
+  .mobile-open-note{
+    display:block;
+    margin:0 0 12px;
+    padding:9px 11px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--surface);
+    color:var(--text-2);
+    font-size:12px;
+    line-height:1.4;
+  }
+  .reno-row{
+    grid-template-columns:22px minmax(0,1fr) 88px 14px !important;
+  }
+  .reno-row input.reno-name{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .card,
+  .card-body,
+  .card-header,
+  .params-row,
+  .metric-grid{
+    min-width:0;
+    max-width:100%;
+  }
+  .results-table,
+  .compare-grid{
+    max-width:none;
+  }
+}
+
+</style>
+</head>
+<body>
 <div class="app">
-  <header>
+<header>
     <h1>Steuer-Szenario-Rechner</h1>
     <p>Renovierung & Vermietung — Familienmodell Niederndorf</p>
   </header>
 
   <div class="save-bar">
-    <button class="save-btn primary" onclick="exportCurrentState()">Aktuellen Stand als HTML speichern</button>
+    <button class="save-btn primary" onclick="shareScenario()">Szenario teilen</button>
     <button class="save-btn" onclick="resetSavedState()">Auf Standardwerte zurücksetzen</button>
     <div class="save-status" id="saveStatus">Änderungen werden auf diesem Gerät automatisch gespeichert.</div>
   </div>
 
+
+  <div class="note-box" style="margin-top:-8px;margin-bottom:16px">
+    <strong>Teilen:</strong> Über „Szenario teilen“ wird ein Link erzeugt, der alle aktuellen Positionen,
+    Preise, Häkchen und Parameter enthält. Wer den Link öffnet, sieht genau diesen Stand.
+  </div>
   <div class="card">
     <div class="card-header">Renovierungen</div>
     <div class="card-body">
-      <div class="reno-list" id="renoList"></div>
+      <div class="reno-list" id="renoList"><div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Fees: Lackierung Metalltürzargen"><input type="number" class="reno-amount" value="840"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Fees: Lackierung Treppengestell &amp; Geländer"><input type="number" class="reno-amount" value="3400"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Fees: Verlegung Vinylboden"><input type="number" class="reno-amount" value="6850"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Fees: Malerarbeiten gesamtes Wohnhaus"><input type="number" class="reno-amount" value="6965"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Fees: Sanierung Wand- &amp; Deckenflächen Dachgeschoss"><input type="number" class="reno-amount" value="2940"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Fees: Schallschutz-Vorsatzwand Wohnzimmer"><input type="number" class="reno-amount" value="1870"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Fees: Nacharbeiten"><input type="number" class="reno-amount" value="900"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Fees: Nebenleistungen &amp; Regiearbeiten"><input type="number" class="reno-amount" value="565"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Fees: Umsatzsteuer 19%"><input type="number" class="reno-amount" value="4623"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Grimm: Treppenstufen"><input type="number" class="reno-amount" value="8000"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Energieberater: Wärmepumpe Förderung"><input type="number" class="reno-amount" value="-12880"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Wir: Böden kaufen"><input type="number" class="reno-amount" value="3000"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Wir: Türen und Türzargen"><input type="number" class="reno-amount" value="2000"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Weidinger: Wärmepumpe"><input type="number" class="reno-amount" value="28283"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Weidinger: Enthärtungsanlage"><input type="number" class="reno-amount" value="2855"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Weidinger: Sanitär Rohinstallation"><input type="number" class="reno-amount" value="10625"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Weidinger / Elements: Bäder - Geräte, Fliesen etc."><input type="number" class="reno-amount" value="20000"><span class="unit">€</span></div>
+<div class="reno-row" data-fallback-row="1"><input type="checkbox" checked><input class="reno-name" value="Weidinger: 19% MwSt"><input type="number" class="reno-amount" value="10379"><span class="unit">€</span></div>
+<div class="reno-row nicht-absetzbar" data-fallback-row="1"><input type="checkbox"><input class="reno-name" value="Weidinger: Klimaanlage"><input type="number" class="reno-amount" value="11127"><span class="unit">€</span></div>
+<div class="reno-row nicht-absetzbar" data-fallback-row="1"><input type="checkbox"><input class="reno-name" value="Küchengeräte"><input type="number" class="reno-amount" value="5000"><span class="unit">€</span></div>
+<div class="reno-row nicht-absetzbar" data-fallback-row="1"><input type="checkbox"><input class="reno-name" value="Möbel (Sofa, Tisch, Bank, etc.)"><input type="number" class="reno-amount" value="5000"><span class="unit">€</span></div>
+<div class="reno-row nicht-absetzbar" data-fallback-row="1"><input type="checkbox"><input class="reno-name" value="Heimkino (Beamer, Leinwand, Rear-Speaker)"><input type="number" class="reno-amount" value="5000"><span class="unit">€</span></div>
+<div class="reno-row nicht-absetzbar" data-fallback-row="1"><input type="checkbox"><input class="reno-name" value="Homegym"><input type="number" class="reno-amount" value="5000"><span class="unit">€</span></div>
+<div class="reno-row nicht-absetzbar" data-fallback-row="1"><input type="checkbox"><input class="reno-name" value="Whirlpool"><input type="number" class="reno-amount" value="5000"><span class="unit">€</span></div></div>
       <button class="btn-add" onclick="addReno()">+ Position</button>
       <div style="margin-top:14px">
         <div class="summary-row total">
@@ -252,31 +432,25 @@ header p{color:var(--text-2);font-size:0.9rem;margin-top:2px}
       </div>
     </div>
     <div class="card-body">
-      <div class="compare-grid" id="compareGrid"></div>
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><div class="compare-grid" id="compareGrid"></div></div>
       <div class="note-box" id="compareNote"></div>
     </div>
   </div>
 </div>
-
-<script data-exported-state="true">window.__STATE_ID__="recovered_2026_09_04_1413";window.__EXPORTED_STATE__={"items":[{"name":"Fees: Lackierung Metalltürzargen","amount":840,"absetzbar":true},{"name":"Fees: Lackierung Treppengestell & Geländer","amount":3400,"absetzbar":true},{"name":"Fees: Verlegung Vinylboden","amount":6850,"absetzbar":true},{"name":"Fees: Malerarbeiten gesamtes Wohnhaus","amount":6965,"absetzbar":true},{"name":"Fees: Sanierung Wand- & Deckenflächen Dachgeschoss","amount":2940,"absetzbar":true},{"name":"Fees: Schallschutz-Vorsatzwand Wohnzimmer","amount":1870,"absetzbar":true},{"name":"Fees: Nacharbeiten","amount":900,"absetzbar":true},{"name":"Fees: Nebenleistungen & Regiearbeiten","amount":565,"absetzbar":true},{"name":"Fees: Umsatzsteuer 19%","amount":4623,"absetzbar":true},{"name":"Grimm: Treppenstufen","amount":8000,"absetzbar":true},{"name":"Energieberater: Wärmepumpe Förderung","amount":-12880,"absetzbar":true},{"name":"Wir: Böden kaufen","amount":3000,"absetzbar":true},{"name":"Wir: Türen und Türzargen","amount":2000,"absetzbar":true},{"name":"Weidinger: Wärmepumpe","amount":28283,"absetzbar":true},{"name":"Weidinger: Enthärtungsanlage","amount":2855,"absetzbar":true},{"name":"Weidinger: Sanitär Rohinstallation","amount":10625,"absetzbar":true},{"name":"Weidinger / Elements: Bäder - Geräte, Fliesen etc.","amount":20000,"absetzbar":true},{"name":"Weidinger: 19% MwSt","amount":10379,"absetzbar":true},{"name":"Weidinger: Klimaanlage","amount":11127,"absetzbar":false},{"name":"Küchengeräte","amount":5000,"absetzbar":false},{"name":"Möbel (Sofa, Tisch, Bank, etc.)","amount":5000,"absetzbar":false},{"name":"Heimkino (Beamer, Leinwand, Rear-Speaker)","amount":5000,"absetzbar":false},{"name":"Homegym","amount":5000,"absetzbar":false},{"name":"Whirlpool","amount":5000,"absetzbar":false}]};</script>
 <script>
 const fmt = v => Math.round(v).toLocaleString('de-DE');
 const fmtEur = v => fmt(v) + ' €';
 
 
-const STORAGE_KEY_PREFIX = 'steuerSzenarioState_v2_';
-
-function currentDocumentId() {
-  return window.__STATE_ID__ || 'base';
-}
-
-function currentStorageKey() {
-  return STORAGE_KEY_PREFIX + currentDocumentId();
-}
+const STORAGE_KEY = 'steuerSzenarioGithub_v1';
 
 function getState() {
   return {
-    items: items.map(it => ({ name: it.name, amount: +it.amount || 0, absetzbar: !!it.absetzbar })),
+    items: items.map(it => ({
+      name: it.name,
+      amount: +it.amount || 0,
+      absetzbar: !!it.absetzbar
+    })),
     params: {
       steuersatz: document.getElementById('steuersatz')?.value ?? '47',
       miete: document.getElementById('miete')?.value ?? '1500',
@@ -288,7 +462,7 @@ function getState() {
 
 function saveState() {
   try {
-    localStorage.setItem(currentStorageKey(), JSON.stringify(getState()));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(getState()));
     const el = document.getElementById('saveStatus');
     if (el) el.textContent = 'Gespeichert – Änderungen werden auf diesem Gerät automatisch übernommen.';
   } catch (e) {
@@ -298,88 +472,139 @@ function saveState() {
 
 function applyState(state) {
   if (!state) return;
-  if (Array.isArray(state.items)) items = state.items.map(it => ({
-    name: String(it.name ?? ''),
-    amount: +it.amount || 0,
-    absetzbar: it.absetzbar !== false
-  }));
+  if (Array.isArray(state.items)) {
+    items = state.items.map(it => ({
+      name: String(it.name ?? ''),
+      amount: +it.amount || 0,
+      absetzbar: it.absetzbar !== false
+    }));
+  }
   if (state.params) {
     for (const id of ['steuersatz','miete','ortsueblich','altMiete']) {
-      if (state.params[id] !== undefined && document.getElementById(id)) {
-        document.getElementById(id).value = state.params[id];
+      const input = document.getElementById(id);
+      if (state.params[id] !== undefined && input) {
+        input.value = state.params[id];
       }
     }
   }
 }
 
-function loadInitialState() {
-  // Jede exportierte Datei bekommt eine eigene Speicher-ID. So kann sie lokal
-  // weiterbearbeitet werden, ohne dass andere Versionen ihren Stand überschreiben.
+function bytesToBase64Url(bytes) {
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+}
+
+function base64UrlToBytes(value) {
+  let base64 = value.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4) base64 += '=';
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+
+function encodeState(state) {
+  const json = JSON.stringify(state);
+  return bytesToBase64Url(new TextEncoder().encode(json));
+}
+
+function decodeState(value) {
+  const json = new TextDecoder().decode(base64UrlToBytes(value));
+  return JSON.parse(json);
+}
+
+function readSharedState() {
+  const hash = location.hash || '';
+  if (!hash.startsWith('#s=')) return null;
   try {
-    const raw = localStorage.getItem(currentStorageKey());
-    if (raw) {
-      applyState(JSON.parse(raw));
-      return;
-    }
+    return decodeState(hash.slice(3));
+  } catch (e) {
+    console.warn('Geteiltes Szenario konnte nicht gelesen werden:', e);
+    return null;
+  }
+}
+
+function loadInitialState() {
+  // Ein geteilter Link hat Vorrang vor einem eventuell bereits lokal
+  // gespeicherten Szenario. Nach dem Import wird der lange Daten-Hash
+  // aus der Adresszeile entfernt und der Stand lokal gespeichert.
+  const shared = readSharedState();
+  if (shared) {
+    applyState(shared);
+    try {
+      history.replaceState(null, '', location.pathname + location.search);
+    } catch (e) {}
+    const el = document.getElementById('saveStatus');
+    if (el) el.textContent = 'Geteiltes Szenario geladen. Änderungen werden jetzt auf diesem Gerät gespeichert.';
+    return;
+  }
+
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) applyState(JSON.parse(raw));
   } catch (e) {
     console.warn('Gespeicherter Stand konnte nicht geladen werden:', e);
   }
-
-  // Beim allerersten Öffnen einer weitergegebenen Datei dient der eingebettete
-  // Zustand als Ausgangspunkt.
-  if (window.__EXPORTED_STATE__) applyState(window.__EXPORTED_STATE__);
 }
 
 function resetSavedState() {
-  try { localStorage.removeItem(currentStorageKey()); } catch (e) {}
-  if (window.__EXPORTED_STATE__) {
-    applyState(window.__EXPORTED_STATE__);
-    renderReno();
-    recalc();
-  } else {
-    location.reload();
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  items = DEFAULT_ITEMS.map(it => ({...it}));
+  for (const [id, value] of Object.entries(DEFAULT_PARAMS)) {
+    const input = document.getElementById(id);
+    if (input) input.value = value;
+  }
+  renderReno();
+  recalc();
+  const el = document.getElementById('saveStatus');
+  if (el) el.textContent = 'Standardwerte wiederhergestellt.';
+}
+
+async function shareScenario() {
+  const state = getState();
+  const baseUrl = location.href.split('#')[0];
+  const url = baseUrl + '#s=' + encodeState(state);
+
+  const shareData = {
+    title: 'Steuer-Szenario-Rechner',
+    text: 'Hier ist der aktuelle Stand unseres Steuer-/Renovierungsszenarios:',
+    url
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      const el = document.getElementById('saveStatus');
+      if (el) el.textContent = 'Teilen-Dialog geöffnet – der aktuelle Stand steckt im Link.';
+      return;
+    }
+  } catch (e) {
+    if (e && e.name === 'AbortError') return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(url);
+    const el = document.getElementById('saveStatus');
+    if (el) el.textContent = 'Szenario-Link kopiert – du kannst ihn jetzt verschicken.';
+  } catch (e) {
+    window.prompt('Diesen Link kopieren und verschicken:', url);
   }
 }
 
-function exportCurrentState() {
-  const state = getState();
-  const newStateId = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
-
-  // Wichtig: Beim Export aus einer bereits exportierten Datei alte eingebettete
-  // Zustände entfernen. Sonst würde ein älterer Stand den neuen wieder überschreiben.
-  const clone = document.documentElement.cloneNode(true);
-  // Nur den zuvor eingebetteten Datenblock entfernen. Das Haupt-JavaScript
-  // muss unbedingt erhalten bleiben, damit auch exportierte Dateien erneut
-  // bearbeitet und wieder exportiert werden können.
-  clone.querySelectorAll('script[data-exported-state]').forEach(el => el.remove());
-
-  const scripts = clone.querySelectorAll('script');
-  const mainScript = scripts[scripts.length - 1];
-  const stateScriptEl = document.createElement('script');
-  stateScriptEl.setAttribute('data-exported-state', 'true');
-  stateScriptEl.textContent = 'window.__STATE_ID__=' + JSON.stringify(newStateId) + ';window.__EXPORTED_STATE__=' + JSON.stringify(state).replace(/</g, '\u003c') + ';';
-  if (mainScript) mainScript.parentNode.insertBefore(stateScriptEl, mainScript);
-  else clone.appendChild(stateScriptEl);
-
-  let html = '<!DOCTYPE html>\n' + clone.outerHTML;
-
-  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const now = new Date();
-  const stamp = [now.getFullYear(), String(now.getMonth()+1).padStart(2,'0'), String(now.getDate()).padStart(2,'0')].join('-');
-  a.href = url;
-  a.download = `steuer-szenario-${stamp}.html`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-
-  const el = document.getElementById('saveStatus');
-  if (el) el.textContent = 'Weitergebbare HTML-Datei wurde erstellt – die aktuellen Werte sind darin enthalten.';
-}
-
 let items = [{"name":"Fees: Lackierung Metalltürzargen","amount":840,"absetzbar":true},{"name":"Fees: Lackierung Treppengestell & Geländer","amount":3400,"absetzbar":true},{"name":"Fees: Verlegung Vinylboden","amount":6850,"absetzbar":true},{"name":"Fees: Malerarbeiten gesamtes Wohnhaus","amount":6965,"absetzbar":true},{"name":"Fees: Sanierung Wand- & Deckenflächen Dachgeschoss","amount":2940,"absetzbar":true},{"name":"Fees: Schallschutz-Vorsatzwand Wohnzimmer","amount":1870,"absetzbar":true},{"name":"Fees: Nacharbeiten","amount":900,"absetzbar":true},{"name":"Fees: Nebenleistungen & Regiearbeiten","amount":565,"absetzbar":true},{"name":"Fees: Umsatzsteuer 19%","amount":4623,"absetzbar":true},{"name":"Grimm: Treppenstufen","amount":8000,"absetzbar":true},{"name":"Energieberater: Wärmepumpe Förderung","amount":-12880,"absetzbar":true},{"name":"Wir: Böden kaufen","amount":3000,"absetzbar":true},{"name":"Wir: Türen und Türzargen","amount":2000,"absetzbar":true},{"name":"Weidinger: Wärmepumpe","amount":28283,"absetzbar":true},{"name":"Weidinger: Enthärtungsanlage","amount":2855,"absetzbar":true},{"name":"Weidinger: Sanitär Rohinstallation","amount":10625,"absetzbar":true},{"name":"Weidinger / Elements: Bäder - Geräte, Fliesen etc.","amount":20000,"absetzbar":true},{"name":"Weidinger: 19% MwSt","amount":10379,"absetzbar":true},{"name":"Weidinger: Klimaanlage","amount":11127,"absetzbar":false},{"name":"Küchengeräte","amount":5000,"absetzbar":false},{"name":"Möbel (Sofa, Tisch, Bank, etc.)","amount":5000,"absetzbar":false},{"name":"Heimkino (Beamer, Leinwand, Rear-Speaker)","amount":5000,"absetzbar":false},{"name":"Homegym","amount":5000,"absetzbar":false},{"name":"Whirlpool","amount":5000,"absetzbar":false}];
+
+const DEFAULT_ITEMS = items.map(it => ({...it}));
+const DEFAULT_PARAMS = {
+  steuersatz: '47',
+  miete: '1500',
+  ortsueblich: '1800',
+  altMiete: '1200'
+};
+
 
 const durations = [3, 6, 9, 12, 18, 24, 36];
 
@@ -615,3 +840,5 @@ loadInitialState();
 renderReno();
 recalc();
 </script>
+</body>
+</html>
